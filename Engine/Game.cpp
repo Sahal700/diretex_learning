@@ -38,127 +38,107 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	
 	if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
-		if (!inhibitLeft) {
-			vx = vx - 1;
-			inhibitLeft = true;
-		}
-	} else {
-		inhibitLeft = false;
-	}
+			mobileX = mobileX - 1;
+	} 
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
-		if (!inhibitRight) {
-			vx = vx + 1;
-			inhibitRight = true;
-		}
+			mobileX = mobileX + 1;
 	}
-	else {
-		inhibitRight = false;
-	}
+	
 	if (wnd.kbd.KeyIsPressed(VK_UP)) {
-		if (!inhibitUp) {
-			vy = vy - 1;
-			inhibitUp = true;
-		}
+			mobileY = mobileY - 1;
 	}
-	else {
-		inhibitUp = false;
-	}
+	
 	if (wnd.kbd.KeyIsPressed(VK_DOWN)) {
-		if (!inhibitDown) {
-			vy = vy + 1;
-			inhibitDown = true;
-		}
+		
+			mobileY = mobileY + 1;
 	}
-	else {
-		inhibitDown = false;
-	}
-
-	x = x + vx;
-	y = y + vy;
-
-	if(x+5 >= gfx.ScreenWidth) {
-		x = gfx.ScreenWidth - 6;
-		vx = 0;
-	}
-	if (x - 5 < 0) {
-		x = 5;
-		vx = 0;
-	}
-	if (y + 5 >= gfx.ScreenHeight) {
-		y = gfx.ScreenHeight - 6;
-		vy = 0;
-	}
-	if (y - 5 < 0) {
-		y = 5;
-		vy = 0;
-	}
-
 	
 
-	if (wnd.kbd.KeyIsPressed(VK_CONTROL)) {
-		gb = 0;
-	} else {
-		if (x >= 350 && x <= 450){
-			gb = 0;
-		}
-		else {
-			gb = 255;
-		}
-	}
-	isShapeChanged = wnd.kbd.KeyIsPressed(VK_SHIFT);
+	mobileX = clampScreenX(mobileX);
+	mobileY = clampScreenY(mobileY);
+	
+	colliding = overlapingTest(fixed0X, fixed0Y, mobileX, mobileY) ||
+				overlapingTest(fixed1X, fixed1Y, mobileX, mobileY) ||
+				overlapingTest(fixed2X, fixed2Y, mobileX, mobileY) ||
+				overlapingTest(fixed3X, fixed3Y, mobileX, mobileY);
+
+	//isShapeChanged = wnd.kbd.KeyIsPressed(VK_SHIFT);
 }
 
 void Game::ComposeFrame()
 {
-	
-	if (!isShapeChanged) {
-		gfx.PutPixel(x, y - 5, 255, gb, gb);
-		gfx.PutPixel(x, y - 4, 255, gb, gb);
-		gfx.PutPixel(x, y - 3, 255, gb, gb);
-		gfx.PutPixel(x, y - 2, 255, gb, gb);
+	drawBox(fixed0X, fixed0Y, 0, 255, 0);
+	drawBox(fixed1X, fixed1Y, 0, 255, 0);
+	drawBox(fixed2X, fixed2Y, 0, 255, 0);
+	drawBox(fixed3X, fixed3Y, 0, 255, 0);
 
-		gfx.PutPixel(x, y + 2, 255, gb, gb);
-		gfx.PutPixel(x, y + 3, 255, gb, gb);
-		gfx.PutPixel(x, y + 4, 255, gb, gb);
-		gfx.PutPixel(x, y + 5, 255, gb, gb);
 
-		gfx.PutPixel(x - 5, y, 255, gb, gb);
-		gfx.PutPixel(x - 4, y, 255, gb, gb);
-		gfx.PutPixel(x - 3, y, 255, gb, gb);
-		gfx.PutPixel(x - 2, y, 255, gb, gb);
-
-		gfx.PutPixel(x + 2, y, 255, gb, gb);
-		gfx.PutPixel(x + 3, y, 255, gb, gb);
-		gfx.PutPixel(x + 4, y, 255, gb, gb);
-		gfx.PutPixel(x + 5, y, 255, gb, gb);
+	if (colliding) {
+		drawBox(mobileX, mobileY, 255, 0, 0);
 	}
 	else {
-		gfx.PutPixel(x-5, y - 3, 255, gb, gb);
-		gfx.PutPixel(x-5, y - 4, 255, gb, gb);
-		gfx.PutPixel(x-5, y - 5, 255, gb, gb);
-		gfx.PutPixel(x-4, y - 5, 255, gb, gb);
-		gfx.PutPixel(x-3, y - 5, 255, gb, gb);
-
-		gfx.PutPixel(x + 5, y + 3, 255, gb, gb);
-		gfx.PutPixel(x + 5, y + 4, 255, gb, gb);
-		gfx.PutPixel(x + 5, y + 5, 255, gb, gb);
-		gfx.PutPixel(x + 4, y + 5, 255, gb, gb);
-		gfx.PutPixel(x + 3, y + 5, 255, gb, gb);
-
-		gfx.PutPixel(x - 5, y + 3, 255, gb, gb);
-		gfx.PutPixel(x - 5, y + 4, 255, gb, gb);
-		gfx.PutPixel(x - 5, y + 5, 255, gb, gb);
-		gfx.PutPixel(x - 4, y + 5, 255, gb, gb);
-		gfx.PutPixel(x - 3, y + 5, 255, gb, gb);
-
-		gfx.PutPixel(x + 5, y - 3, 255, gb, gb);
-		gfx.PutPixel(x + 5, y - 4, 255, gb, gb);
-		gfx.PutPixel(x + 5, y - 5, 255, gb, gb);
-		gfx.PutPixel(x + 4, y - 5, 255, gb, gb);
-		gfx.PutPixel(x + 3, y - 5, 255, gb, gb);
+		drawBox(mobileX, mobileY, 255, 255, 255);
 	}
 
 
+}
+
+void Game::drawBox(int x, int y, int r, int g, int b) {
+
+	gfx.PutPixel(x - 5, y - 3, r, g, b);
+	gfx.PutPixel(x - 5, y - 4, r, g, b);
+	gfx.PutPixel(x - 5, y - 5, r, g, b);
+	gfx.PutPixel(x - 4, y - 5, r, g, b);
+	gfx.PutPixel(x - 3, y - 5, r, g, b);
+	gfx.PutPixel(x + 5, y + 3, r, g, b);
+	gfx.PutPixel(x + 5, y + 4, r, g, b);
+	gfx.PutPixel(x + 5, y + 5, r, g, b);
+	gfx.PutPixel(x + 4, y + 5, r, g, b);
+	gfx.PutPixel(x + 3, y + 5, r, g, b);
+	gfx.PutPixel(x - 5, y + 3, r, g, b);
+	gfx.PutPixel(x - 5, y + 4, r, g, b);
+	gfx.PutPixel(x - 5, y + 5, r, g, b);
+	gfx.PutPixel(x - 4, y + 5, r, g, b);
+	gfx.PutPixel(x - 3, y + 5, r, g, b);
+	gfx.PutPixel(x + 5, y - 3, r, g, b);
+	gfx.PutPixel(x + 5, y - 4, r, g, b);
+	gfx.PutPixel(x + 5, y - 5, r, g, b);
+	gfx.PutPixel(x + 4, y - 5, r, g, b);
+	gfx.PutPixel(x + 3, y - 5, r, g, b);
+}
+
+bool Game::overlapingTest(int box0X, int box0Y, int box1X, int box1Y)
+{
+	int mobileLeft = box0X - 5, mobileRight = box0X + 5, mobileTop = box0Y - 5, mobileDown = box0Y + 5;
+	int fixedLeft = box1X - 5, fixedRight = box1X + 5, fixedTop = box1Y - 5, fixedBottom = box1Y + 5;
+
+	return (mobileLeft <= fixedRight && mobileRight >= fixedLeft) && (mobileTop <= fixedBottom && mobileDown >= fixedTop);
+}
+
+int Game::clampScreenX(int x)
+{
+	int left = x - 5;
+	int right = x + 5;
+	if (left < 0) {
+		return 5;
+	}
+	if (right >= gfx.ScreenWidth) {
+		return gfx.ScreenWidth - 6;
+	}
+
+	return x;
+	
+}
+int Game::clampScreenY(int y)
+{
+	int top = y - 5;
+	int bottom= y + 5;
+	if (top < 0) {
+		return 5;
+	}
+	if (bottom >= gfx.ScreenHeight) {
+		return gfx.ScreenHeight - 6;
+	}
+	return y;
 }

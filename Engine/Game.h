@@ -36,6 +36,11 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void drawBox(int x, int y, int r, int g, int b);
+	bool overlapingTest(int box0X, int box0Y, int box1X, int box1Y);
+	int clampScreenX(int x);
+	int clampScreenY(int y);
+
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -43,17 +48,18 @@ private:
 	/********************************/
 	/*  User Variables              */
 
-	int x = 400;
-	int y  = 300;
-	int vx = 0;
-	int vy = 0;
-	int gb = 255;
-	bool isShapeChanged = false;
+	int mobileX = 400;
+	int mobileY = 300;
+	int fixed0X = 100;
+	int fixed0Y = 300;
+	int fixed1X = 180;
+	int fixed1Y = 210;
+	int fixed2X = 390;
+	int fixed2Y = 480;
+	int fixed3X = 480;
+	int fixed3Y = 120;
 
-	bool inhibitRight = false;
-	bool inhibitLeft = false;
-	bool inhibitUp = false;
-	bool inhibitDown = false;
+	bool colliding = false;
 
 	/********************************/
 };
